@@ -343,76 +343,77 @@ document.addEventListener(
 );
 
 
-// ===============================
-// CONTACT FORM
-// ===============================
+/* =========================================
+   CONTACT FORM
+========================================= */
 
-const contactForm = document.getElementById("contactForm");
-const formStatus = document.getElementById("formMessage");
+const contactForm =
+    document.getElementById(
+        "contactForm"
+    );
 
-if (contactForm) {
-    contactForm.addEventListener("submit", async function (event) {
+
+contactForm.addEventListener(
+    "submit",
+    event => {
 
         event.preventDefault();
 
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const message = document.getElementById("message").value.trim();
 
-        if (!name || !email || !message) {
-            formStatus.textContent = "Please fill in all fields.";
-            formStatus.className = "form-message error";
-            return;
-        }
+        const name =
+            document.getElementById(
+                "name"
+            ).value.trim();
 
-        formStatus.textContent = "Sending message...";
-        formStatus.className = "form-message";
 
-        try {
+        const email =
+            document.getElementById(
+                "email"
+            ).value.trim();
 
-            const response = await fetch(
-                "http://127.0.0.1:5000/api/contact",
-                {
-                    method: "POST",
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+        const message =
+            document.getElementById(
+                "message"
+            ).value.trim();
 
-                    body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        message: message
-                    })
-                }
+
+        const formMessage =
+            document.getElementById(
+                "formMessage"
             );
 
-            const result = await response.json();
 
-            if (result.success) {
+        if (
+            !name ||
+            !email ||
+            !message
+        ) {
 
-                formStatus.textContent = "Message sent successfully!";
-                formStatus.className = "form-message success";
+            formMessage.textContent =
+                "Please fill all fields.";
 
-                contactForm.reset();
+            return;
 
-            } else {
-
-                formStatus.textContent = result.message;
-                formStatus.className = "form-message error";
-            }
-
-        } catch (error) {
-
-            console.error("Contact form error:", error);
-
-            formStatus.textContent =
-                "Unable to connect to the server.";
-
-            formStatus.className = "form-message error";
         }
-    });
-}
+
+
+        /*
+         * This is only frontend validation.
+         *
+         * It does NOT actually send the email.
+         * Later we can connect EmailJS or
+         * a backend.
+         */
+
+        formMessage.textContent =
+            "Message form is ready. Connect EmailJS or a backend to receive messages.";
+
+
+        contactForm.reset();
+
+    }
+);
 
 
 /* =========================================
