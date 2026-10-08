@@ -343,77 +343,76 @@ document.addEventListener(
 );
 
 
-/* =========================================
-   CONTACT FORM
-========================================= */
+// ===============================
+// CONTACT FORM
+// ===============================
 
-const contactForm =
-    document.getElementById(
-        "contactForm"
-    );
+const contactForm = document.getElementById("contactForm");
+const formStatus = document.getElementById("formMessage");
 
-
-contactForm.addEventListener(
-    "submit",
-    event => {
+if (contactForm) {
+    contactForm.addEventListener("submit", async function (event) {
 
         event.preventDefault();
 
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const message = document.getElementById("message").value.trim();
 
-        const name =
-            document.getElementById(
-                "name"
-            ).value.trim();
-
-
-        const email =
-            document.getElementById(
-                "email"
-            ).value.trim();
-
-
-        const message =
-            document.getElementById(
-                "message"
-            ).value.trim();
-
-
-        const formMessage =
-            document.getElementById(
-                "formMessage"
-            );
-
-
-        if (
-            !name ||
-            !email ||
-            !message
-        ) {
-
-            formMessage.textContent =
-                "Please fill all fields.";
-
+        if (!name || !email || !message) {
+            formStatus.textContent = "Please fill in all fields.";
+            formStatus.className = "form-message error";
             return;
-
         }
 
+        formStatus.textContent = "Sending message...";
+        formStatus.className = "form-message";
 
-        /*
-         * This is only frontend validation.
-         *
-         * It does NOT actually send the email.
-         * Later we can connect EmailJS or
-         * a backend.
-         */
+        try {
 
-        formMessage.textContent =
-            "Message form is ready. Connect EmailJS or a backend to receive messages.";
+            const response = await fetch(
+                "http://127.0.0.1:5000/api/contact",
+                {
+                    method: "POST",
 
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-        contactForm.reset();
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        message: message
+                    })
+                }
+            );
 
-    }
-);
+            const result = await response.json();
+
+            if (result.success) {
+
+                formStatus.textContent = "Message sent successfully!";
+                formStatus.className = "form-message success";
+
+                contactForm.reset();
+
+            } else {
+
+                formStatus.textContent = result.message;
+                formStatus.className = "form-message error";
+            }
+
+        } catch (error) {
+
+            console.error("Contact form error:", error);
+
+            formStatus.textContent =
+                "Unable to connect to the server.";
+
+            formStatus.className = "form-message error";
+        }
+    });
+}
 
 
 /* =========================================
