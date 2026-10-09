@@ -8,6 +8,7 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
+
 CORS(app)
 
 @app.after_request
