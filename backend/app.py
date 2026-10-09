@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from dotenv import load_dotenv
 from email.message import EmailMessage
 import smtplib
@@ -7,7 +8,7 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.after_request
 def add_security_headers(response):
